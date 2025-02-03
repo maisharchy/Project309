@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ComplaintService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.Complaint</a>
+</div>
+
+<h1>Coverage Summary for Class: ComplaintService (backend.demo2.Complaint)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ComplaintService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87%
+  </span>
+  <span class="absValue">
+    (20/23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.Complaint;
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import backend.demo2.User.User;
+&nbsp;import backend.demo2.User.UserRepository;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class ComplaintService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ComplaintRepository complaintRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRepository userRepository; // Add this line to inject UserRepository
+&nbsp;
+&nbsp;    // Get all complaints
+&nbsp;    public List&lt;Complaint&gt; getAllComplaints() {
+<b class="nc">&nbsp;        return complaintRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Create a new complaint
+&nbsp;    public Complaint createComplaint(Long complainedUserId, Long complainantUserId, String reason) {
+<b class="fc">&nbsp;        User complainedUser = userRepository.findById(complainedUserId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new RuntimeException(&quot;Complained user not found&quot;));</b>
+<b class="fc">&nbsp;        User complainantUser = userRepository.findById(complainantUserId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new RuntimeException(&quot;Complainant user not found&quot;));</b>
+&nbsp;
+<b class="fc">&nbsp;        Complaint complaint = new Complaint(complainedUser, complainantUser, reason, LocalDate.now());</b>
+<b class="fc">&nbsp;        return complaintRepository.save(complaint);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // Get a complaint by ID
+&nbsp;    public Optional&lt;Complaint&gt; getComplaintById(Long id) {
+<b class="fc">&nbsp;        return complaintRepository.findById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Delete a complaint by ID
+&nbsp;    public void deleteComplaint(Long id) {
+<b class="fc">&nbsp;        complaintRepository.deleteById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Update a complaint
+&nbsp;    public Complaint updateComplaint(Long id, Long complainedUserId, Long complainantUserId, String reason) {
+<b class="fc">&nbsp;        Optional&lt;Complaint&gt; optionalComplaint = complaintRepository.findById(id);</b>
+<b class="pc">&nbsp;        if (optionalComplaint.isPresent()) {</b>
+<b class="fc">&nbsp;            Complaint complaint = optionalComplaint.get();</b>
+&nbsp;
+&nbsp;            // Update the complained and complainant users
+<b class="fc">&nbsp;            User complainedUser = userRepository.findById(complainedUserId)</b>
+<b class="fc">&nbsp;                    .orElseThrow(() -&gt; new RuntimeException(&quot;Complained user not found&quot;)); // Handle user not found</b>
+<b class="fc">&nbsp;            User complainantUser = userRepository.findById(complainantUserId)</b>
+<b class="fc">&nbsp;                    .orElseThrow(() -&gt; new RuntimeException(&quot;Complainant user not found&quot;)); // Handle user not found</b>
+&nbsp;
+<b class="fc">&nbsp;            complaint.setComplainedUser(complainedUser);</b>
+<b class="fc">&nbsp;            complaint.setComplainantUser(complainantUser);</b>
+<b class="fc">&nbsp;            complaint.setReason(reason);</b>
+<b class="fc">&nbsp;            return complaintRepository.save(complaint);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Complaint not found&quot;); // Handle not found case</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    // Method to fetch complaints by complainant user ID
+&nbsp;    public List&lt;Complaint&gt; getComplaintsByComplainantUserId(int complainantUserId) {
+<b class="nc">&nbsp;        return complaintRepository.findByComplainantUserId(complainantUserId);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

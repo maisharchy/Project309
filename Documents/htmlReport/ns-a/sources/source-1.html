@@ -1,0 +1,216 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GameController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: GameController (backend.demo2.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (1/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.1%
+  </span>
+  <span class="absValue">
+    (1/14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.controller;
+&nbsp;
+&nbsp;import backend.demo2.model.Game;
+&nbsp;import backend.demo2.model.ServerGame;
+&nbsp;import backend.demo2.service.GameService;
+&nbsp;import backend.demo2.service.GameAssignmentService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/games&quot;)
+<b class="fc">&nbsp;public class GameController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private GameService gameService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private GameAssignmentService gameAssignmentService;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get all available games&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully fetched all games&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;)
+&nbsp;    })
+&nbsp;    @GetMapping
+&nbsp;    public ResponseEntity&lt;List&lt;Game&gt;&gt; getAllGames() {
+<b class="nc">&nbsp;        List&lt;Game&gt; games = gameService.getAllGames();</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(games);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get all games for a specific server&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully fetched games for server&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Server not found&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;)
+&nbsp;    })
+&nbsp;    @GetMapping(&quot;/{serverId}&quot;)
+&nbsp;    public List&lt;Game&gt; getGamesByServerId(@PathVariable Long serverId) {
+<b class="nc">&nbsp;        return gameService.getGamesByServerId(serverId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Assign a game to a server&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Successfully assigned game to server&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad Request (Invalid game or server)&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;)
+&nbsp;    })
+&nbsp;    @PostMapping(&quot;/{serverId}/{gameId}/assign&quot;)
+&nbsp;    public ResponseEntity&lt;ServerGame&gt; assignGame(@PathVariable Long serverId, @PathVariable Long gameId) {
+<b class="nc">&nbsp;        ServerGame assignedGame = gameAssignmentService.assignGameToServer(serverId, gameId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(assignedGame);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Assign default games to a server when a player joins&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Successfully assigned default games to server&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad Request (Invalid server)&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;)
+&nbsp;    })
+&nbsp;    @PostMapping(&quot;/{serverId}/assign-default-games&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;ServerGame&gt;&gt; assignDefaultGamesToServer(@PathVariable Long serverId) {
+<b class="nc">&nbsp;        List&lt;ServerGame&gt; serverGames = gameAssignmentService.assignDefaultGamesToServer(serverId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(serverGames);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update game details (title and description)&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successfully updated game details&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Game not found&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad Request (Invalid game details)&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;)
+&nbsp;    })
+&nbsp;    @PutMapping(&quot;/{gameId}&quot;)
+&nbsp;    public ResponseEntity&lt;Game&gt; updateGameDetails(@PathVariable Long gameId, @RequestBody Game updatedGame) {
+<b class="nc">&nbsp;        Game game = gameService.updateGameDetails(gameId, updatedGame.getTitle(), updatedGame.getDescription());</b>
+<b class="nc">&nbsp;        if (game == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.ok(game);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Delete a game assignment from a specific server&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Successfully deleted game from server&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Game or server not found&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal Server Error&quot;)
+&nbsp;    })
+&nbsp;    @DeleteMapping(&quot;/server/{serverId}/{gameId}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteGameFromServer(@PathVariable Long serverId, @PathVariable Long gameId) {
+<b class="nc">&nbsp;        gameAssignmentService.removeGameFromServer(serverId, gameId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.noContent().build();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

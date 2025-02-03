@@ -1,0 +1,92 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProblemReportRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.ProblemReport</a>
+</div>
+
+<h1>Coverage Summary for Class: ProblemReportRepository (backend.demo2.ProblemReport)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ProblemReportRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.ProblemReport;
+&nbsp;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Modifying;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;import backend.demo2.ProblemReport.ProblemReport;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Repository
+&nbsp;public interface ProblemReportRepository extends JpaRepository&lt;ProblemReport, Long&gt; {
+&nbsp;    @Modifying
+&nbsp;    @Transactional
+&nbsp;    @Query(&quot;DELETE FROM ProblemReport p WHERE p.user.id = :userId&quot;)
+&nbsp;    void deleteByUserId(@Param(&quot;userId&quot;) int userId);
+&nbsp;    List&lt;ProblemReport&gt; findByUserId(Long userId);
+&nbsp;    @Query(&quot;SELECT pr FROM ProblemReport pr WHERE pr.user.id IN :userIds&quot;)
+&nbsp;    List&lt;ProblemReport&gt; findByUserIdIn(@Param(&quot;userIds&quot;) List&lt;Long&gt; userIds);
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-11 13:58</div>
+</div>
+</body>
+</html>

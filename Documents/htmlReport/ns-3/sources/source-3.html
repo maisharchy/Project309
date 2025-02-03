@@ -1,0 +1,269 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GuessNumberService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.GuessTheNumber</a>
+</div>
+
+<h1>Coverage Summary for Class: GuessNumberService (backend.demo2.GuessTheNumber)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GuessNumberService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.1%
+  </span>
+  <span class="absValue">
+    (1/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.6%
+  </span>
+  <span class="absValue">
+    (4/72)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.GuessTheNumber;
+&nbsp;
+&nbsp;import backend.demo2.User.User;
+&nbsp;import backend.demo2.User.UserRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.web.socket.TextMessage;
+&nbsp;import org.springframework.web.socket.WebSocketSession;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.*;
+&nbsp;import java.util.concurrent.ConcurrentHashMap;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class GuessNumberService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private GameSessionRepository gameSessionRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private PlayerScoreRepository playerScoreRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRepository userRepository;
+&nbsp;
+<b class="fc">&nbsp;    private Set&lt;WebSocketSession&gt; allPlayers = Collections.newSetFromMap(new ConcurrentHashMap&lt;&gt;());</b>
+<b class="fc">&nbsp;    private Map&lt;WebSocketSession, String&gt; users = new ConcurrentHashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;    private Random random = new Random();</b>
+&nbsp;
+&nbsp;    public GameSession startNewGame(int totalRounds) {
+<b class="nc">&nbsp;        GameSession session = new GameSession();</b>
+<b class="nc">&nbsp;        session.setTotalRounds(totalRounds);</b>
+<b class="nc">&nbsp;        session.setCurrentRound(1);</b>
+<b class="nc">&nbsp;        session.setCurrentNumber(generateRandomNumber());</b>
+<b class="nc">&nbsp;        session.setActive(true);</b>
+<b class="nc">&nbsp;        return gameSessionRepository.save(session);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void processGuess(String userId, int guess, WebSocketSession session) throws Exception {
+<b class="nc">&nbsp;        GameSession activeSession = getActiveGameSession();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (activeSession == null) {</b>
+<b class="nc">&nbsp;            session.sendMessage(new TextMessage(&quot;No active game session. Please wait for the next game.&quot;));</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        int correctNumber = activeSession.getCurrentNumber();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (guess == correctNumber) {</b>
+<b class="nc">&nbsp;            handleCorrectGuess(userId, activeSession, session);</b>
+<b class="nc">&nbsp;            broadcastMessageToAllPlayers(&quot;Player &quot; + userId + &quot; guessed the number correctly!&quot;);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            String hint = guess &lt; correctNumber ? &quot;HIGHER&quot; : &quot;LOWER&quot;;</b>
+<b class="nc">&nbsp;            session.sendMessage(new TextMessage(hint));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void handleCorrectGuess(String userId, GameSession session, WebSocketSession webSocketSession) throws Exception {
+<b class="nc">&nbsp;        User user = userRepository.findById(Long.parseLong(userId))</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new RuntimeException(&quot;User not found&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        PlayerScore playerScore = playerScoreRepository.findByGameSessionAndUser(session, user);</b>
+<b class="nc">&nbsp;        if (playerScore == null) {</b>
+<b class="nc">&nbsp;            playerScore = new PlayerScore();</b>
+<b class="nc">&nbsp;            playerScore.setUser(user);</b>
+<b class="nc">&nbsp;            playerScore.setGameSession(session);</b>
+<b class="nc">&nbsp;            playerScore.setScore(0);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        playerScore.setScore(playerScore.getScore() + 10);</b>
+<b class="nc">&nbsp;        playerScoreRepository.save(playerScore);</b>
+&nbsp;
+<b class="nc">&nbsp;        webSocketSession.sendMessage(new TextMessage(&quot;Congratulations! You guessed the number.&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        if (session.getCurrentRound() &lt; session.getTotalRounds()) {</b>
+<b class="nc">&nbsp;            session.setCurrentRound(session.getCurrentRound() + 1);</b>
+<b class="nc">&nbsp;            session.setCurrentNumber(generateRandomNumber());</b>
+<b class="nc">&nbsp;            gameSessionRepository.save(session);</b>
+&nbsp;
+<b class="nc">&nbsp;            broadcastMessageToAllPlayers(&quot;New round started! Guess the new number.&quot;);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            session.setActive(false);</b>
+<b class="nc">&nbsp;            gameSessionRepository.save(session);</b>
+&nbsp;
+<b class="nc">&nbsp;            broadcastMessageToAllPlayers(&quot;Game over! Displaying final scores.&quot;);</b>
+<b class="nc">&nbsp;            displayScores(session);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private int generateRandomNumber() {
+<b class="nc">&nbsp;        return random.nextInt(100) + 1; // Random number between 1 and 100</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void broadcastMessageToAllPlayers(String message) throws IOException {
+<b class="nc">&nbsp;        for (WebSocketSession player : allPlayers) {</b>
+<b class="nc">&nbsp;            if (player.isOpen()) {</b>
+<b class="nc">&nbsp;                player.sendMessage(new TextMessage(message));</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void displayScores(GameSession session) throws IOException {
+<b class="nc">&nbsp;        List&lt;PlayerScore&gt; scores = playerScoreRepository.findByGameSession(session);</b>
+<b class="nc">&nbsp;        StringBuilder scoreMessage = new StringBuilder(&quot;Game Over! Displaying Final Scores:\n&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        PlayerScore highestScorer = scores.stream()</b>
+<b class="nc">&nbsp;                .max(Comparator.comparingInt(PlayerScore::getScore))</b>
+<b class="nc">&nbsp;                .orElse(null);</b>
+&nbsp;
+<b class="nc">&nbsp;        for (PlayerScore score : scores) {</b>
+<b class="nc">&nbsp;            scoreMessage.append(&quot;Player &quot;)</b>
+<b class="nc">&nbsp;                    .append(score.getUser().getUsername())</b>
+<b class="nc">&nbsp;                    .append(&quot;: &quot;)</b>
+<b class="nc">&nbsp;                    .append(score.getScore())</b>
+<b class="nc">&nbsp;                    .append(&quot;\n&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (highestScorer != null) {</b>
+<b class="nc">&nbsp;            scoreMessage.append(&quot;\nHighest Scorer: &quot;)</b>
+<b class="nc">&nbsp;                    .append(highestScorer.getUser().getUsername())</b>
+<b class="nc">&nbsp;                    .append(&quot; with &quot;)</b>
+<b class="nc">&nbsp;                    .append(highestScorer.getScore())</b>
+<b class="nc">&nbsp;                    .append(&quot; points!&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        scoreMessage.append(&quot;Thank you for playing Guess The Number! The game is over.&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        broadcastMessageToAllPlayers(scoreMessage.toString());</b>
+<b class="nc">&nbsp;        disconnectAllPlayers();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void disconnectAllPlayers() throws IOException {
+<b class="nc">&nbsp;        for (WebSocketSession player : new ArrayList&lt;&gt;(allPlayers)) { // Avoid ConcurrentModificationException</b>
+<b class="nc">&nbsp;            if (player.isOpen()) {</b>
+&nbsp;                //player.sendMessage(new TextMessage(&quot;Thank you for playing! The game is over.&quot;));
+<b class="nc">&nbsp;                player.close(); // Close the WebSocket connection</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        users.clear();</b>
+<b class="nc">&nbsp;        allPlayers.clear(); // Clear the player set</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public GameSession getActiveGameSession() {
+<b class="nc">&nbsp;        return gameSessionRepository.findByIsActiveTrue();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addPlayer(WebSocketSession session) {
+<b class="nc">&nbsp;        allPlayers.add(session);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void removePlayer(WebSocketSession session) {
+<b class="nc">&nbsp;        allPlayers.remove(session);</b>
+<b class="nc">&nbsp;        users.remove(session);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

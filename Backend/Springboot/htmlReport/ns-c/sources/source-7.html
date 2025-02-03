@@ -1,0 +1,265 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UnscrambleGameHandler</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.service</a>
+</div>
+
+<h1>Coverage Summary for Class: UnscrambleGameHandler (backend.demo2.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UnscrambleGameHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (2/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.4%
+  </span>
+  <span class="absValue">
+    (11/67)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.service;
+&nbsp;
+&nbsp;
+&nbsp;import backend.demo2.Server.Server;
+&nbsp;import backend.demo2.Server.ServerRepository;
+&nbsp;import backend.demo2.User.User;
+&nbsp;import backend.demo2.model.UnscrambleGameplay;
+&nbsp;import backend.demo2.model.UnscrambleWord;
+&nbsp;import backend.demo2.repository.UnscrambleGameplayRepository;
+&nbsp;import backend.demo2.repository.UnscrambleWordRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import org.springframework.web.socket.TextMessage;
+&nbsp;import org.springframework.web.socket.WebSocketSession;
+&nbsp;import org.springframework.web.socket.handler.TextWebSocketHandler;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.*;
+&nbsp;import java.util.concurrent.ConcurrentHashMap;
+&nbsp;
+&nbsp;@Component
+&nbsp;public class UnscrambleGameHandler extends TextWebSocketHandler {
+<b class="fc">&nbsp;    private static final Map&lt;WebSocketSession, String&gt; users = new ConcurrentHashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;    private List&lt;UnscrambleWord&gt; wordsPool = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    private final List&lt;String&gt; sessionWords = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    private final Map&lt;String, Integer&gt; scores = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;    private int currentWordIndex = 0;</b>
+<b class="fc">&nbsp;    private boolean gameActive = false;</b>
+<b class="fc">&nbsp;    private Long sessionId = System.currentTimeMillis();</b>
+&nbsp;    private int serverId;
+&nbsp;
+&nbsp;    private final UnscrambleWordRepository unscrambleWordRepository;
+&nbsp;    private final UnscrambleGameplayRepository unscrambleGameplayRepository;
+&nbsp;    private final ServerRepository serverRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    public UnscrambleGameHandler(UnscrambleWordRepository unscrambleWordRepository,
+&nbsp;                                 UnscrambleGameplayRepository unscrambleGameplayRepository,
+<b class="fc">&nbsp;                                 ServerRepository serverRepository) {</b>
+<b class="fc">&nbsp;        this.unscrambleWordRepository = unscrambleWordRepository;</b>
+<b class="fc">&nbsp;        this.unscrambleGameplayRepository = unscrambleGameplayRepository;</b>
+<b class="fc">&nbsp;        this.serverRepository = serverRepository;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+<b class="nc">&nbsp;        Map&lt;String, String&gt; params = getParametersFromSession(session);</b>
+<b class="nc">&nbsp;        String userId = params.get(&quot;userId&quot;);</b>
+<b class="nc">&nbsp;        String serverId = params.get(&quot;serverId&quot;);</b>
+<b class="nc">&nbsp;        this.serverId = Integer.parseInt(serverId);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (userId != null &amp;&amp; serverId != null) {</b>
+<b class="nc">&nbsp;            users.put(session, userId);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (!gameActive) {</b>
+<b class="nc">&nbsp;                loadWordsForSession();</b>
+<b class="nc">&nbsp;                gameActive = true;</b>
+<b class="nc">&nbsp;                sendNextWord();</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+<b class="nc">&nbsp;        String payload = message.getPayload();</b>
+<b class="nc">&nbsp;        String userId = users.get(session);</b>
+<b class="nc">&nbsp;        String correctWord = sessionWords.get(currentWordIndex);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (correctWord.equalsIgnoreCase(payload.trim())) {</b>
+<b class="nc">&nbsp;            updateScore(userId, 10);</b>
+<b class="nc">&nbsp;            sendMessageToAll(userId + &quot; answered correctly! Moving to the next word.&quot;);</b>
+<b class="nc">&nbsp;            if (++currentWordIndex &lt; sessionWords.size()) {</b>
+<b class="nc">&nbsp;                sendNextWord();</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                endGame();</b>
+&nbsp;            }
+&nbsp;        } else {
+<b class="nc">&nbsp;            session.sendMessage(new TextMessage(&quot;Incorrect! Try again.&quot;));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private Map&lt;String, String&gt; getParametersFromSession(WebSocketSession session) {
+<b class="nc">&nbsp;        Map&lt;String, String&gt; params = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        String uri = session.getUri().toString();</b>
+<b class="nc">&nbsp;        String[] parts = uri.split(&quot;/&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (parts.length &gt;= 3) {</b>
+<b class="nc">&nbsp;            params.put(&quot;userId&quot;, parts[parts.length - 2]);</b>
+<b class="nc">&nbsp;            params.put(&quot;serverId&quot;, parts[parts.length - 1]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return params;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void loadWordsForSession() {
+<b class="nc">&nbsp;        wordsPool = unscrambleWordRepository.findAll();</b>
+<b class="nc">&nbsp;        Collections.shuffle(wordsPool);</b>
+<b class="nc">&nbsp;        sessionWords.clear();</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; 10 &amp;&amp; i &lt; wordsPool.size(); i++) {</b>
+<b class="nc">&nbsp;            sessionWords.add(wordsPool.get(i).getWord());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void sendNextWord() throws IOException {
+<b class="nc">&nbsp;        String scrambled = scrambleWord(sessionWords.get(currentWordIndex));</b>
+<b class="nc">&nbsp;        sendMessageToAll(&quot;Unscramble this word: &quot; + scrambled);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String scrambleWord(String word) {
+<b class="nc">&nbsp;        List&lt;Character&gt; chars = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (char c : word.toCharArray()) {</b>
+<b class="nc">&nbsp;            chars.add(c);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Collections.shuffle(chars);</b>
+<b class="nc">&nbsp;        StringBuilder scrambled = new StringBuilder();</b>
+<b class="nc">&nbsp;        for (char c : chars) {</b>
+<b class="nc">&nbsp;            scrambled.append(c);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return scrambled.toString();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void updateScore(String userId, int points) {
+<b class="nc">&nbsp;        scores.put(userId, scores.getOrDefault(userId, 0) + points);</b>
+<b class="nc">&nbsp;        UnscrambleGameplay gameplay = unscrambleGameplayRepository</b>
+<b class="nc">&nbsp;                .findByUserIdAndSessionId(Integer.valueOf(userId), sessionId);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (gameplay == null) {</b>
+<b class="nc">&nbsp;            gameplay = new UnscrambleGameplay(new User(Integer.parseInt(userId)), 0, sessionId, getServer());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        gameplay.setScore(gameplay.getScore() + points);</b>
+<b class="nc">&nbsp;        unscrambleGameplayRepository.save(gameplay);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Server getServer() {
+<b class="nc">&nbsp;        return serverRepository.findById((long) serverId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Server not found&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void sendMessageToAll(String message) throws IOException {
+<b class="nc">&nbsp;        for (WebSocketSession session : users.keySet()) {</b>
+<b class="nc">&nbsp;            session.sendMessage(new TextMessage(message));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void endGame() throws IOException {
+<b class="nc">&nbsp;        sendMessageToAll(&quot;Game Over! Scores: &quot; + scores);</b>
+<b class="nc">&nbsp;        users.clear();</b>
+<b class="nc">&nbsp;        gameActive = false;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-11 13:58</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProfileDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.ProfileSettings</a>
+</div>
+
+<h1>Coverage Summary for Class: ProfileDTO (backend.demo2.ProfileSettings)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProfileDTO</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.ProfileSettings;
+&nbsp;
+&nbsp;import backend.demo2.Server.ServerMembership;
+&nbsp;import backend.demo2.User.User;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;// ProfileDTO for display
+&nbsp;public class ProfileDTO {
+&nbsp;    private final User user;
+&nbsp;    private final Profile profile;
+&nbsp;    private final List&lt;ServerMembership&gt; memberships;
+&nbsp;
+<b class="fc">&nbsp;    public ProfileDTO(User user, Profile profile, List&lt;ServerMembership&gt; memberships) {</b>
+<b class="fc">&nbsp;        this.user = user;</b>
+<b class="fc">&nbsp;        this.profile = profile;</b>
+<b class="fc">&nbsp;        this.memberships = memberships;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Getters
+&nbsp;    public User getUser() {
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Profile getProfile() {
+<b class="fc">&nbsp;        return profile;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;ServerMembership&gt; getMemberships() {
+<b class="fc">&nbsp;        return memberships;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,221 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Profile</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.ProfileSettings</a>
+</div>
+
+<h1>Coverage Summary for Class: Profile (backend.demo2.ProfileSettings)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Profile</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.5%
+  </span>
+  <span class="absValue">
+    (6/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (7/15)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Profile$HibernateInstantiator$7b0XdW0b</td>
+  </tr>
+  <tr>
+    <td class="name">Profile$HibernateInstantiator$Hki1uRmE</td>
+  </tr>
+  <tr>
+    <td class="name">Profile$HibernateProxy$0SuPFewv</td>
+  </tr>
+  <tr>
+    <td class="name">Profile$HibernateProxy$8wv6mI4q</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    54.5%
+  </span>
+  <span class="absValue">
+    (6/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (7/15)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.ProfileSettings;
+&nbsp;
+&nbsp;import backend.demo2.User.User;
+&nbsp;import backend.demo2.Server.ServerMembership;
+&nbsp;import com.fasterxml.jackson.annotation.JsonIgnore;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import java.util.HashSet;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;Profiles&quot;)
+&nbsp;public class Profile {
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @Column(name = &quot;user_id&quot;)
+&nbsp;    private int userId;  // Primary key and foreign key referencing Users(id)
+&nbsp;
+&nbsp;    @OneToOne
+&nbsp;    @MapsId
+&nbsp;    @JoinColumn(name = &quot;user_id&quot;)
+&nbsp;    @JsonIgnore
+&nbsp;    private User user;
+&nbsp;
+&nbsp;    private String bio;
+&nbsp;    private String avatar;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    @ManyToMany(mappedBy = &quot;profiles&quot;)</b>
+&nbsp;    private Set&lt;ServerMembership&gt; serverMemberships = new HashSet&lt;&gt;();
+&nbsp;
+&nbsp;    // Constructors
+<b class="fc">&nbsp;    public Profile() {}</b>
+&nbsp;
+<b class="nc">&nbsp;    public Profile(User user, String bio, String avatar) {</b>
+<b class="nc">&nbsp;        this.user = user;</b>
+<b class="nc">&nbsp;        this.bio = bio;</b>
+<b class="nc">&nbsp;        this.avatar = avatar;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    // Getters and Setters
+&nbsp;    public int getUserId() {
+<b class="fc">&nbsp;        return userId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getUser() {
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUser(User user) {
+<b class="nc">&nbsp;        this.user = user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getBio() {
+<b class="fc">&nbsp;        return bio;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setBio(String bio) {
+<b class="nc">&nbsp;        this.bio = bio != null ? bio.trim() : null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getAvatar() {
+<b class="fc">&nbsp;        return avatar;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAvatar(String avatar) {
+<b class="nc">&nbsp;        this.avatar = (avatar != null) ? avatar.replaceAll(&quot;\\s+$&quot;, &quot;&quot;) : null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public Set&lt;ServerMembership&gt; getServerMemberships() {
+<b class="fc">&nbsp;        return serverMemberships;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setServerMemberships(Set&lt;ServerMembership&gt; serverMemberships) {
+<b class="nc">&nbsp;        this.serverMemberships = serverMemberships;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

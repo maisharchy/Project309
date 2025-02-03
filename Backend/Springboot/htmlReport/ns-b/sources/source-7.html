@@ -1,0 +1,197 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SignUpUser</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.model</a>
+</div>
+
+<h1>Coverage Summary for Class: SignUpUser (backend.demo2.model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SignUpUser</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (5/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (5/15)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SignUpUser$HibernateInstantiator$5BLQwPgO</td>
+  </tr>
+  <tr>
+    <td class="name">SignUpUser$HibernateInstantiator$Ux0C4Sj1</td>
+  </tr>
+  <tr>
+    <td class="name">SignUpUser$HibernateProxy$4GGRgmB5</td>
+  </tr>
+  <tr>
+    <td class="name">SignUpUser$HibernateProxy$Olyyi0Z8</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (5/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (5/15)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.model;
+&nbsp;
+&nbsp;import jakarta.persistence.*;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;users&quot;)
+<b class="fc">&nbsp;public class SignUpUser {</b>
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;
+&nbsp;    private Long id;
+&nbsp;    private String email;
+&nbsp;    private String firstname;
+&nbsp;    private String lastname;
+&nbsp;    private String password;
+&nbsp;    private String username;
+&nbsp;    private Boolean logged_In;
+&nbsp;
+&nbsp;
+&nbsp;    // Getters and Setters
+&nbsp;    public Long getId() {
+<b class="nc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setId(Long id) {
+<b class="nc">&nbsp;        this.id = id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getEmail() {
+<b class="nc">&nbsp;        return email;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEmail(String email) {
+<b class="nc">&nbsp;        this.email = email;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getFirstname() {
+<b class="nc">&nbsp;        return firstname;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFirstname(String firstname) {
+<b class="nc">&nbsp;        this.firstname = firstname;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getLastname() {
+<b class="nc">&nbsp;        return lastname;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setLastname(String lastname) {
+<b class="nc">&nbsp;        this.lastname = lastname;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getPassword() {
+<b class="nc">&nbsp;        return password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPassword(String password) {
+<b class="fc">&nbsp;        this.password = password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getUsername() {
+<b class="fc">&nbsp;        return username;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUsername(String username) {
+<b class="fc">&nbsp;        this.username = username;</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public Boolean getLoggedIn(){return logged_In;}</b>
+&nbsp;
+&nbsp;    public void setLoggedIn(Boolean loggedIn) {
+<b class="fc">&nbsp;        this.logged_In = loggedIn;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-11 13:58</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,190 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TriviaGameplay</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.Trivia</a>
+</div>
+
+<h1>Coverage Summary for Class: TriviaGameplay (backend.demo2.Trivia)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TriviaGameplay</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.1%
+  </span>
+  <span class="absValue">
+    (1/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.1%
+  </span>
+  <span class="absValue">
+    (1/11)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TriviaGameplay$HibernateInstantiator$C5gMp3jU</td>
+  </tr>
+  <tr>
+    <td class="name">TriviaGameplay$HibernateInstantiator$E39hYKmc</td>
+  </tr>
+  <tr>
+    <td class="name">TriviaGameplay$HibernateProxy$u2Xoyoeu</td>
+  </tr>
+  <tr>
+    <td class="name">TriviaGameplay$HibernateProxy$UiKJWt3W</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    9.1%
+  </span>
+  <span class="absValue">
+    (1/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.1%
+  </span>
+  <span class="absValue">
+    (1/11)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.Trivia;
+&nbsp;
+&nbsp;import backend.demo2.Server.Server;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import backend.demo2.User.User;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;trivia_gameplay&quot;)
+<b class="fc">&nbsp;public class TriviaGameplay {</b>
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private Long id;
+&nbsp;    private Long sessionId;
+&nbsp;
+&nbsp;    @ManyToOne
+&nbsp;    @JoinColumn(name = &quot;user_id&quot;, nullable = false)
+&nbsp;    private User user;
+&nbsp;
+&nbsp;    @ManyToOne
+&nbsp;    @JoinColumn(name = &quot;server_id&quot;, nullable = false)
+&nbsp;    private Server server;
+&nbsp;
+&nbsp;    @Column(nullable = false)
+&nbsp;    private Integer score;
+&nbsp;
+&nbsp;    // Getters and setters
+&nbsp;    public Long getId() {
+<b class="nc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setId(Long id) {
+<b class="nc">&nbsp;        this.id = id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getUser() {
+<b class="nc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUser(User user) {
+<b class="nc">&nbsp;        this.user = user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Server getServer() {
+<b class="nc">&nbsp;        return server;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setServer(Server server) {
+<b class="nc">&nbsp;        this.server = server;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Integer getScore() {
+<b class="nc">&nbsp;        return score;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setScore(Integer score) {
+<b class="nc">&nbsp;        this.score = score;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Long getSessionId() {
+<b class="nc">&nbsp;        return sessionId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSessionId(Long sessionId) {
+<b class="nc">&nbsp;        this.sessionId = sessionId;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

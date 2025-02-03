@@ -1,0 +1,363 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FlipTheTile</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.service</a>
+</div>
+
+<h1>Coverage Summary for Class: FlipTheTile (backend.demo2.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FlipTheTile</td>
+<td class="coverageStat">
+  <span class="percent">
+    18.8%
+  </span>
+  <span class="absValue">
+    (3/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6.7%
+  </span>
+  <span class="absValue">
+    (2/30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19.8%
+  </span>
+  <span class="absValue">
+    (19/96)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FlipTheTile$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (3/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6.7%
+  </span>
+  <span class="absValue">
+    (2/30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19%
+  </span>
+  <span class="absValue">
+    (19/100)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.service;
+&nbsp;
+&nbsp;import backend.demo2.Server.Server;
+&nbsp;//import backend.demo2.model.FlipTheTileGameplay;
+&nbsp;import backend.demo2.model.FlipTheTileLeaderboard;
+&nbsp;import backend.demo2.model.Tile;
+&nbsp;import backend.demo2.User.User;
+&nbsp;//import backend.demo2.repository.FlipTheTileGameplayRepository;
+&nbsp;import backend.demo2.repository.FlipTheTileLeaderboardRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.socket.TextMessage;
+&nbsp;import org.springframework.web.socket.WebSocketSession;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;import java.util.concurrent.ConcurrentHashMap;
+&nbsp;
+&nbsp;public class FlipTheTile {
+&nbsp;    private List&lt;Tile&gt; tiles;
+&nbsp;    private Map&lt;WebSocketSession, User&gt; users;
+&nbsp;    private Map&lt;WebSocketSession, Tile&gt; lastFlippedTile;
+&nbsp;    private Map&lt;User, Long&gt; userFinishTimes;  // Store finish time of users
+&nbsp;    private Map&lt;User, Double&gt; userScores;     // Store scores in memory
+&nbsp;    private int matchedPairs;
+&nbsp;    private boolean gameStarted;
+&nbsp;    private long gameStartTime;
+<b class="fc">&nbsp;    private final int TILE_PAIR_COUNT = 10;</b>
+<b class="fc">&nbsp;    private final List&lt;String&gt; colors = Arrays.asList(&quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;, &quot;pink&quot;, &quot;brown&quot;, &quot;black&quot;, &quot;teal&quot;);</b>
+&nbsp;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public FlipTheTile() {</b>
+<b class="fc">&nbsp;        this.tiles = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.users = new ConcurrentHashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.lastFlippedTile = new ConcurrentHashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.userFinishTimes = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.userScores = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.matchedPairs = 0;</b>
+<b class="fc">&nbsp;        this.gameStarted = false;</b>
+<b class="fc">&nbsp;        initializeTiles();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void initializeTiles() {
+<b class="fc">&nbsp;        List&lt;String&gt; selectedColors = new ArrayList&lt;&gt;(colors);</b>
+<b class="fc">&nbsp;        Collections.shuffle(selectedColors);</b>
+&nbsp;
+<b class="fc">&nbsp;        for (int i = 0; i &lt; TILE_PAIR_COUNT; i++) {</b>
+<b class="fc">&nbsp;            String color = selectedColors.get(i % selectedColors.size());</b>
+<b class="fc">&nbsp;            tiles.add(new Tile(i, color));</b>
+<b class="fc">&nbsp;            tiles.add(new Tile(i + TILE_PAIR_COUNT, color));</b>
+&nbsp;        }
+<b class="fc">&nbsp;        shuffleTiles();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void shuffleTiles() {
+<b class="fc">&nbsp;        Collections.shuffle(tiles);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void startGame() {
+<b class="nc">&nbsp;        this.gameStarted = true;</b>
+<b class="nc">&nbsp;        this.gameStartTime = System.currentTimeMillis();</b>
+<b class="nc">&nbsp;        notifyUsers(&quot;Game has started! Flip the tiles.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addUser(WebSocketSession session, User user) {
+<b class="nc">&nbsp;        users.put(session, user);</b>
+<b class="nc">&nbsp;        userScores.put(user, 0.0);  // Initialize user score to 0 when they join</b>
+<b class="nc">&nbsp;        notifyUsers(&quot;New user joined: &quot; + user.getUsername());</b>
+<b class="nc">&nbsp;        sendInitialTileState(session);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void removeUser(WebSocketSession session) {
+<b class="nc">&nbsp;        User user = users.remove(session);</b>
+<b class="nc">&nbsp;        if (user != null) {</b>
+<b class="nc">&nbsp;            lastFlippedTile.remove(session);</b>
+<b class="nc">&nbsp;            userScores.remove(user);</b>
+<b class="nc">&nbsp;            userFinishTimes.remove(user);</b>
+<b class="nc">&nbsp;            notifyUsers(&quot;User left: &quot; + user.getUsername());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void flipTile(int tileId, WebSocketSession session) {
+<b class="nc">&nbsp;        if (!gameStarted) return;</b>
+&nbsp;
+<b class="nc">&nbsp;        Tile flippedTile = getTileById(tileId);</b>
+<b class="nc">&nbsp;        if (flippedTile != null &amp;&amp; flippedTile.isActive() &amp;&amp; !flippedTile.isFlipped()) {</b>
+<b class="nc">&nbsp;            flippedTile.flip();</b>
+<b class="nc">&nbsp;            notifyUsers(&quot;User &quot; + users.get(session).getUsername() + &quot; flipped tile &quot; + tileId);</b>
+&nbsp;
+<b class="nc">&nbsp;            Tile previousFlipped = lastFlippedTile.get(session);</b>
+<b class="nc">&nbsp;            if (previousFlipped == null) {</b>
+<b class="nc">&nbsp;                lastFlippedTile.put(session, flippedTile);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                if (previousFlipped.getColor().equals(flippedTile.getColor())) {</b>
+<b class="nc">&nbsp;                    matchedPairs++;</b>
+<b class="nc">&nbsp;                    flippedTile.setActive(false);</b>
+<b class="nc">&nbsp;                    previousFlipped.setActive(false);</b>
+<b class="nc">&nbsp;                    notifyUsers(&quot;Matched pair: &quot; + flippedTile.getId() + &quot; and &quot; + previousFlipped.getId());</b>
+&nbsp;
+<b class="nc">&nbsp;                    User user = users.get(session);</b>
+<b class="nc">&nbsp;                    updateScore(user, 10.0); // Award points for a match</b>
+&nbsp;
+<b class="nc">&nbsp;                    if (matchedPairs == TILE_PAIR_COUNT) {</b>
+<b class="nc">&nbsp;                        endGame(session);</b>
+&nbsp;                    }
+&nbsp;                } else {
+<b class="nc">&nbsp;                    handleNonMatchingTiles(previousFlipped, flippedTile, session);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                lastFlippedTile.remove(session);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void handleNonMatchingTiles(Tile tile1, Tile tile2, WebSocketSession session) {
+<b class="nc">&nbsp;        notifyUsers(&quot;Tiles did not match: &quot; + tile1.getColor() + &quot; and &quot; + tile2.getColor());</b>
+&nbsp;
+<b class="nc">&nbsp;        new Timer().schedule(new TimerTask() {</b>
+&nbsp;            @Override
+&nbsp;            public void run() {
+<b class="nc">&nbsp;                tile1.flip();</b>
+<b class="nc">&nbsp;                tile2.flip();</b>
+<b class="nc">&nbsp;                notifyUsers(&quot;Tiles have been flipped back.&quot;);</b>
+&nbsp;            }
+&nbsp;        }, 1000);
+&nbsp;
+<b class="nc">&nbsp;        User user = users.get(session);</b>
+<b class="nc">&nbsp;        updateScore(user, -1.0); // Deduct points for incorrect match</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void endGame(WebSocketSession winnerSession) {
+<b class="nc">&nbsp;        long timeTaken = System.currentTimeMillis() - gameStartTime;</b>
+<b class="nc">&nbsp;        User winner = users.get(winnerSession);</b>
+&nbsp;
+&nbsp;        // Record the finish time of the user
+<b class="nc">&nbsp;        userFinishTimes.put(winner, timeTaken);</b>
+&nbsp;
+<b class="nc">&nbsp;        notifyUsers(&quot;Game over! &quot; + winner.getUsername() + &quot; won in &quot; + timeTaken / 1000 + &quot; seconds!&quot;);</b>
+&nbsp;
+&nbsp;        // Show leaderboard after game ends
+<b class="nc">&nbsp;        showLeaderboard();</b>
+&nbsp;    }
+&nbsp;    @Autowired
+&nbsp;    private FlipTheTileLeaderboardRepository leaderboardRepository;
+&nbsp;    private void showLeaderboard() {
+&nbsp;        // Sort users by their scores in descending order
+<b class="nc">&nbsp;        List&lt;Map.Entry&lt;User, Double&gt;&gt; sortedUsers = new ArrayList&lt;&gt;(userScores.entrySet());</b>
+<b class="nc">&nbsp;        sortedUsers.sort((entry1, entry2) -&gt; Double.compare(entry2.getValue(), entry1.getValue())); // Sort in descending order</b>
+&nbsp;
+<b class="nc">&nbsp;        notifyUsers(&quot;Leaderboard:&quot;);</b>
+<b class="nc">&nbsp;        for (Map.Entry&lt;User, Double&gt; entry : sortedUsers) {</b>
+<b class="nc">&nbsp;            User user = entry.getKey();</b>
+<b class="nc">&nbsp;            double score = entry.getValue();</b>
+<b class="nc">&nbsp;            String message = user.getUsername() + &quot; - &quot; + score + &quot; points&quot;;</b>
+<b class="nc">&nbsp;            notifyUsers(message);</b>
+&nbsp;
+&nbsp;
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public void restartGame() {
+<b class="nc">&nbsp;        this.tiles.clear();</b>
+<b class="nc">&nbsp;        this.users.clear();</b>
+<b class="nc">&nbsp;        this.matchedPairs = 0;</b>
+<b class="nc">&nbsp;        this.gameStarted = false;</b>
+<b class="nc">&nbsp;        this.userFinishTimes.clear();</b>
+<b class="nc">&nbsp;        this.userScores.clear();</b>
+<b class="nc">&nbsp;        initializeTiles();</b>
+<b class="nc">&nbsp;        notifyUsers(&quot;The game has been restarted. Users can join again!&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Tile getTileById(int id) {
+<b class="nc">&nbsp;        return tiles.stream().filter(tile -&gt; tile.getId() == id).findFirst().orElse(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void notifyUsers(String message) {
+<b class="nc">&nbsp;        users.forEach((session, user) -&gt; {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                StringBuilder tileStates = new StringBuilder(&quot;TileStates:&quot;);</b>
+<b class="nc">&nbsp;                for (Tile tile : tiles) {</b>
+<b class="nc">&nbsp;                    if (tile.isActive()) {</b>
+<b class="nc">&nbsp;                        tileStates.append(tile.getId()).append(&quot;-&quot;).append(tile.isFlipped() ? tile.getColor() : &quot;unflipped&quot;).append(&quot;,&quot;);</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        tileStates.append(tile.getId()).append(&quot;-vanished,&quot;);</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="nc">&nbsp;                session.sendMessage(new TextMessage(tileStates.toString()));</b>
+<b class="nc">&nbsp;                session.sendMessage(new TextMessage(message));</b>
+<b class="nc">&nbsp;            } catch (Exception e) {</b>
+<b class="nc">&nbsp;                e.printStackTrace();</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;    private void sendInitialTileState(WebSocketSession session) {
+<b class="nc">&nbsp;        StringBuilder initialState = new StringBuilder(&quot;initialState:&quot;);</b>
+<b class="nc">&nbsp;        for (Tile tile : tiles) {</b>
+<b class="nc">&nbsp;            initialState.append(tile.getId()).append(&quot;-unflipped,&quot;);</b>
+&nbsp;        }
+&nbsp;        try {
+<b class="nc">&nbsp;            session.sendMessage(new TextMessage(initialState.toString()));</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void updateScore(User user, Double scoreDelta) {
+<b class="nc">&nbsp;        userScores.put(user, userScores.getOrDefault(user, 0.0) + scoreDelta);</b>
+&nbsp;        // Optionally broadcast the updated score to users
+<b class="nc">&nbsp;        String scoreMessage = &quot;User &quot; + user.getUsername() + &quot;&#39;s score: &quot; + userScores.get(user);</b>
+<b class="nc">&nbsp;        notifyUsers(scoreMessage);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

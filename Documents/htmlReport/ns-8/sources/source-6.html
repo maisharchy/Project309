@@ -1,0 +1,272 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PasswordResetController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.User</a>
+</div>
+
+<h1>Coverage Summary for Class: PasswordResetController (backend.demo2.User)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PasswordResetController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1.8%
+  </span>
+  <span class="absValue">
+    (1/56)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.User;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/password&quot;)
+<b class="fc">&nbsp;public class PasswordResetController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRepository userRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private SecurityQuestionRepository securityQuestionRepository;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Reset Password&quot;, description = &quot;Resets the user&#39;s password after verifying the email and security question answer.&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Password reset was successful&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User not found&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;Incorrect answer to the security question&quot;)
+&nbsp;    })
+&nbsp;    @PutMapping(&quot;/reset&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; resetPassword(@RequestBody PasswordResetRequest passwordResetRequest) {
+<b class="nc">&nbsp;        String email = passwordResetRequest.getEmail();</b>
+<b class="nc">&nbsp;        String password = passwordResetRequest.getPassword();</b>
+<b class="nc">&nbsp;        String securityQuestionAnswer = passwordResetRequest.getSecurityQuestionAnswer();</b>
+&nbsp;
+&nbsp;        // Find the user by email
+<b class="nc">&nbsp;        User user = userRepository.findByEmail(email);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;User with email &quot; + email + &quot; not found.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Fetch the security question for the user
+<b class="nc">&nbsp;        SecurityQuestion securityQuestion = securityQuestionRepository.findByUser(user);</b>
+<b class="nc">&nbsp;        if (securityQuestion == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(&quot;No security question found for the user.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Verify the security answer
+<b class="nc">&nbsp;        if (!securityQuestion.getAnswer().equals(securityQuestionAnswer)) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(&quot;Incorrect answer to the security question.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Update the password
+<b class="nc">&nbsp;        user.setPassword(password); // Set the new password (consider hashing in a real system)</b>
+<b class="nc">&nbsp;        userRepository.save(user);</b>
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Password reset was successful! Log in to view content&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Set Security Question&quot;, description = &quot;Sets a security question for the user by their ID.&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Security question set successfully&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User not found&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;403&quot;, description = &quot;User already has a security question set&quot;)
+&nbsp;    })
+&nbsp;    @PostMapping(&quot;/setSecurityQuestion/{userId}&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; setSecurityQuestion(@PathVariable Long userId, @RequestBody SecurityQuestionRequest securityQuestionRequest) {
+<b class="nc">&nbsp;        User user = userRepository.findById(userId).orElse(null);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;User with ID &quot; + userId + &quot; not found.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Check if the user already has a security question
+<b class="nc">&nbsp;        SecurityQuestion existingSecurityQuestion = securityQuestionRepository.findByUser(user);</b>
+<b class="nc">&nbsp;        if (existingSecurityQuestion != null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(&quot;User already has a security question set.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Create and save the security question
+<b class="nc">&nbsp;        SecurityQuestion securityQuestion = new SecurityQuestion();</b>
+<b class="nc">&nbsp;        securityQuestion.setUser(user);</b>
+<b class="nc">&nbsp;        securityQuestion.setQuestion(securityQuestionRequest.getQuestion());</b>
+<b class="nc">&nbsp;        securityQuestion.setAnswer(securityQuestionRequest.getAnswer());</b>
+<b class="nc">&nbsp;        securityQuestionRepository.save(securityQuestion);</b>
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Security question set successfully.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Set or Update Security Question&quot;, description = &quot;Sets or updates the security question for the user based on their email.&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Security question set or updated successfully&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User not found&quot;)
+&nbsp;    })
+&nbsp;    @PutMapping(&quot;/setSecurityQuestion&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; setOrUpdateSecurityQuestion(@RequestBody SecurityQuestionRequest securityQuestionRequest) {
+<b class="nc">&nbsp;        String email = securityQuestionRequest.getEmail();</b>
+&nbsp;
+&nbsp;        // Find the user by email
+<b class="nc">&nbsp;        User user = userRepository.findByEmail(email);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;User with email &quot; + email + &quot; not found.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Check if the user already has a security question
+<b class="nc">&nbsp;        SecurityQuestion securityQuestion = securityQuestionRepository.findByUser(user);</b>
+<b class="nc">&nbsp;        if (securityQuestion != null) {</b>
+<b class="nc">&nbsp;            securityQuestion.setQuestion(securityQuestionRequest.getQuestion());</b>
+<b class="nc">&nbsp;            securityQuestion.setAnswer(securityQuestionRequest.getAnswer());</b>
+<b class="nc">&nbsp;            securityQuestionRepository.save(securityQuestion);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Security question updated successfully.&quot;);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            securityQuestion = new SecurityQuestion();</b>
+<b class="nc">&nbsp;            securityQuestion.setUser(user);</b>
+<b class="nc">&nbsp;            securityQuestion.setQuestion(securityQuestionRequest.getQuestion());</b>
+<b class="nc">&nbsp;            securityQuestion.setAnswer(securityQuestionRequest.getAnswer());</b>
+<b class="nc">&nbsp;            securityQuestionRepository.save(securityQuestion);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Security question set successfully.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get Security Question by User ID&quot;, description = &quot;Fetches the security question set for the user by their ID.&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Security question fetched successfully&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User or security question not found&quot;)
+&nbsp;    })
+&nbsp;    @GetMapping(&quot;/securityQuestion/{userId}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; getSecurityQuestion(@PathVariable Long userId) {
+<b class="nc">&nbsp;        User user = userRepository.findById(userId).orElse(null);</b>
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;User with ID &quot; + userId + &quot; not found.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        SecurityQuestion securityQuestion = securityQuestionRepository.findByUser(user);</b>
+<b class="nc">&nbsp;        if (securityQuestion == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;No security question found for the user.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(securityQuestion.getQuestion());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get User ID by Email&quot;, description = &quot;Fetches the user ID using the email address.&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;User ID fetched successfully&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User not found&quot;)
+&nbsp;    })
+&nbsp;    @PostMapping(&quot;/getUserIdByEmail&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; getUserIdByEmail(@RequestBody EmailRequest emailRequest) {
+<b class="nc">&nbsp;        String email = emailRequest.getEmail();</b>
+<b class="nc">&nbsp;        User user = userRepository.findByEmail(email);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (user == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND)</b>
+<b class="nc">&nbsp;                    .body(&quot;User with email &quot; + email + &quot; not found.&quot;);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return ResponseEntity.ok(user.getId());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

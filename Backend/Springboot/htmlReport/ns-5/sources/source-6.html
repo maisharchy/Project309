@@ -1,0 +1,162 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProfileService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.ProfileSettings</a>
+</div>
+
+<h1>Coverage Summary for Class: ProfileService (backend.demo2.ProfileSettings)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProfileService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (1/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6.2%
+  </span>
+  <span class="absValue">
+    (1/16)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.ProfileSettings;
+&nbsp;
+&nbsp;import backend.demo2.ProfileSettings.ProfileRepository;
+&nbsp;import backend.demo2.Server.ServerMembership;
+&nbsp;import backend.demo2.Server.ServerMembershipRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class ProfileService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ProfileRepository profileRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ServerMembershipRepository membershipRepository;
+&nbsp;
+&nbsp;    public Profile createProfile(Profile profile) {
+<b class="nc">&nbsp;        return profileRepository.save(profile);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Optional&lt;Profile&gt; getProfile(Integer id) {
+<b class="nc">&nbsp;        return profileRepository.findById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Profile updateProfile(Profile profile) {
+<b class="nc">&nbsp;        return profileRepository.save(profile);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void deleteProfile(Integer id) {
+<b class="nc">&nbsp;        profileRepository.deleteById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addMembership(Integer profileId, ServerMembership membership) {
+<b class="nc">&nbsp;        Profile profile = profileRepository.findById(profileId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new RuntimeException(&quot;Profile not found&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        membership.getProfiles().add(profile); // Now this will work</b>
+<b class="nc">&nbsp;        membershipRepository.save(membership);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void removeMembership(Integer profileId, Long membershipId) {
+<b class="nc">&nbsp;        Profile profile = profileRepository.findById(profileId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new RuntimeException(&quot;Profile not found&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        ServerMembership membership = membershipRepository.findById(membershipId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new RuntimeException(&quot;Membership not found&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        membership.getProfiles().remove(profile);</b>
+<b class="nc">&nbsp;        membershipRepository.save(membership);</b>
+&nbsp;    }
+&nbsp;    public Optional&lt;Profile&gt; getProfileByUserId(Integer userId) {
+<b class="nc">&nbsp;        return profileRepository.findByUserId(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-11 13:58</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".MainActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="0dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:text="Home"
+            android:textColor="#ffffff">
+        </Button>
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:text="Back"
+            android:textColor="#ffffff">
+        </Button>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/nameSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/firstNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="First Name" />
+        <EditText
+            android:id="@+id/lastNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Last Name" />
+        <Button
+            android:id="@+id/updateNameButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Name" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/usernameSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/usernameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username" />
+        <Button
+            android:id="@+id/updateUsernameButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Username" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bioSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/bioInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Bio" />
+        <Button
+            android:id="@+id/updateBioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Bio" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/avatarSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/avatarInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Avatar URL" />
+        <Button
+            android:id="@+id/updateAvatarButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Avatar" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/passwordSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/currentPasswordInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Current Password"
+            android:inputType="textPassword" />
+        <EditText
+            android:id="@+id/newPasswordInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="New Password"
+            android:inputType="textPassword" />
+        <Button
+            android:id="@+id/updatePasswordButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Password" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/editNameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Name" />
+
+    <Button
+        android:id="@+id/editUsernameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Username" />
+
+    <Button
+        android:id="@+id/editBioButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Bio" />
+
+    <Button
+        android:id="@+id/editAvatarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Avatar" />
+
+    <Button
+        android:id="@+id/editPasswordButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Password" />
+
+    <Button
+        android:id="@+id/deleteAccountButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Account" />
+
+    <ImageView
+        android:id="@+id/avatarPreview"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Avatar preview"
+        android:src="@drawable/ic_default_avatar"/>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

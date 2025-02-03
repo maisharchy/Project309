@@ -1,0 +1,315 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProfileController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.ProfileSettings</a>
+</div>
+
+<h1>Coverage Summary for Class: ProfileController (backend.demo2.ProfileSettings)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProfileController</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (6/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    27.3%
+  </span>
+  <span class="absValue">
+    (6/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43.5%
+  </span>
+  <span class="absValue">
+    (27/62)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ProfileController$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (6/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    27.3%
+  </span>
+  <span class="absValue">
+    (6/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43.5%
+  </span>
+  <span class="absValue">
+    (27/62)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.ProfileSettings;
+&nbsp;
+&nbsp;import backend.demo2.Complaint.ComplaintRepository;
+&nbsp;import backend.demo2.GuessTheNumber.PlayerScoreRepository;
+&nbsp;import backend.demo2.ProblemReport.ProblemReportRepository;
+&nbsp;import backend.demo2.Server.ServerMembershipRepository;
+&nbsp;import backend.demo2.Server.ServerRepository;
+&nbsp;import backend.demo2.Trivia.TriviaGameplayRepository;
+&nbsp;import backend.demo2.User.User;
+&nbsp;import backend.demo2.User.UserRepository;
+&nbsp;import backend.demo2.Server.ServerMembership;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/profile&quot;)
+&nbsp;@Tag(name = &quot;Profile Controller&quot;, description = &quot;Manage user profiles&quot;)
+<b class="fc">&nbsp;public class ProfileController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ProfileRepository profileRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRepository userRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ServerRepository serverRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ComplaintRepository complaintRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ServerMembershipRepository serverMembershipRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ProblemReportRepository problemReportRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private TriviaGameplayRepository triviaGameplayRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private PlayerScoreRepository playerScoreRepository;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get user profile&quot;, description = &quot;Retrieve the profile information of a user by their ID&quot;)
+&nbsp;    @GetMapping(&quot;/{userId}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; getProfile(@Parameter(description = &quot;ID of the user to be retrieved&quot;) @PathVariable int userId) {
+<b class="fc">&nbsp;        Optional&lt;Profile&gt; profileOpt = profileRepository.findById(userId);</b>
+<b class="pc">&nbsp;        if (profileOpt.isEmpty()) return ResponseEntity.notFound().build();</b>
+&nbsp;
+<b class="fc">&nbsp;        Profile profile = profileOpt.get();</b>
+<b class="fc">&nbsp;        User user = profile.getUser();</b>
+<b class="fc">&nbsp;        List&lt;ServerMembership&gt; memberships = serverRepository.findMembershipsByUserId(userId);</b>
+&nbsp;
+<b class="fc">&nbsp;        return ResponseEntity.ok(new ProfileDTO(user, profile, memberships));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Create user profile&quot;, description = &quot;Create a new profile for the user&quot;)
+&nbsp;    @PostMapping(&quot;/createProfile/{userId}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; createProfile(@Parameter(description = &quot;ID of the user to create the profile for&quot;) @PathVariable int userId,
+&nbsp;                                           @RequestBody Profile profileData) {
+<b class="nc">&nbsp;        Optional&lt;User&gt; userOpt = userRepository.findById((long) userId);</b>
+<b class="nc">&nbsp;        if (userOpt.isEmpty()) return ResponseEntity.notFound().build();</b>
+&nbsp;
+<b class="nc">&nbsp;        User user = userOpt.get();</b>
+<b class="nc">&nbsp;        profileData.setUser(user); // Associate the profile with the user</b>
+<b class="nc">&nbsp;        profileRepository.save(profileData);</b>
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Profile created successfully.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update user bio&quot;, description = &quot;Update the bio of a user&#39;s profile&quot;)
+&nbsp;    @PutMapping(&quot;/{userId}/edit/bio&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; updateBio(@Parameter(description = &quot;ID of the user whose bio is to be updated&quot;) @PathVariable int userId,
+&nbsp;                                       @RequestBody UpdateBioRequest request) {
+<b class="fc">&nbsp;        Optional&lt;Profile&gt; profileOpt = profileRepository.findById(userId);</b>
+<b class="pc">&nbsp;        if (profileOpt.isEmpty()) return ResponseEntity.notFound().build();</b>
+&nbsp;
+<b class="nc">&nbsp;        Profile profile = profileOpt.get();</b>
+<b class="nc">&nbsp;        profile.setBio(request.getBio());</b>
+<b class="nc">&nbsp;        profileRepository.save(profile);</b>
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Bio updated successfully.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update user avatar&quot;, description = &quot;Update the avatar of a user&#39;s profile&quot;)
+&nbsp;    @PutMapping(&quot;/{userId}/edit/avatar&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; updateAvatar(@Parameter(description = &quot;ID of the user whose avatar is to be updated&quot;) @PathVariable int userId,
+&nbsp;                                          @RequestBody UpdateAvatarRequest request) {
+<b class="nc">&nbsp;        Optional&lt;Profile&gt; profileOpt = profileRepository.findById(userId);</b>
+<b class="nc">&nbsp;        if (profileOpt.isEmpty()) return ResponseEntity.notFound().build();</b>
+&nbsp;
+<b class="nc">&nbsp;        Profile profile = profileOpt.get();</b>
+<b class="nc">&nbsp;        profile.setAvatar(request.getAvatar());</b>
+<b class="nc">&nbsp;        profileRepository.save(profile);</b>
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Avatar updated successfully.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update username&quot;, description = &quot;Update the username of a user&quot;)
+&nbsp;    @PutMapping(&quot;/{userId}/edit/username&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; updateUsername(@Parameter(description = &quot;ID of the user whose username is to be updated&quot;) @PathVariable int userId,
+&nbsp;                                            @RequestBody UpdateUsernameRequest request) {
+<b class="fc">&nbsp;        Optional&lt;User&gt; userOpt = userRepository.findById(Long.valueOf(userId));</b>
+<b class="pc">&nbsp;        if (userOpt.isEmpty()) return ResponseEntity.notFound().build();</b>
+&nbsp;
+<b class="fc">&nbsp;        User user = userOpt.get();</b>
+<b class="fc">&nbsp;        user.setUsername(request.getUsername());</b>
+<b class="fc">&nbsp;        userRepository.save(user);</b>
+&nbsp;
+<b class="fc">&nbsp;        return ResponseEntity.ok(&quot;Username updated successfully.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update user name&quot;, description = &quot;Update the first and last name of a user&quot;)
+&nbsp;    @PutMapping(&quot;/{userId}/edit/name&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; updateName(@Parameter(description = &quot;ID of the user whose name is to be updated&quot;) @PathVariable int userId,
+&nbsp;                                        @RequestBody UpdateNameRequest request) {
+<b class="fc">&nbsp;        Optional&lt;User&gt; userOpt = userRepository.findById(Long.valueOf(userId));</b>
+<b class="pc">&nbsp;        if (userOpt.isEmpty()) return ResponseEntity.notFound().build();</b>
+&nbsp;
+<b class="fc">&nbsp;        User user = userOpt.get();</b>
+<b class="fc">&nbsp;        user.setFirstname(request.getFirstname());</b>
+<b class="fc">&nbsp;        user.setLastname(request.getLastname());</b>
+<b class="fc">&nbsp;        userRepository.save(user);</b>
+&nbsp;
+<b class="fc">&nbsp;        return ResponseEntity.ok(&quot;Name updated successfully.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update user password&quot;, description = &quot;Update the password of a user&quot;)
+&nbsp;    @PutMapping(&quot;/{userId}/update-password&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; updatePassword(@Parameter(description = &quot;ID of the user whose password is to be updated&quot;) @PathVariable int userId,
+&nbsp;                                            @RequestBody UpdatePasswordRequest request) {
+<b class="nc">&nbsp;        Optional&lt;User&gt; userOpt = userRepository.findById(Long.valueOf(userId));</b>
+<b class="nc">&nbsp;        if (userOpt.isEmpty()) return ResponseEntity.notFound().build();</b>
+&nbsp;
+<b class="nc">&nbsp;        User user = userOpt.get();</b>
+<b class="nc">&nbsp;        if (!request.getCurrentPassword().equals(user.getPassword())) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(403).body(&quot;Incorrect current password.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        user.setPassword(request.getNewPassword());</b>
+<b class="nc">&nbsp;        userRepository.save(user);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Password updated successfully.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Delete user account&quot;, description = &quot;Delete the user account including all related data&quot;)
+&nbsp;    @DeleteMapping(&quot;/{userId}/delete-account&quot;)
+&nbsp;    @Transactional
+&nbsp;    public ResponseEntity&lt;?&gt; deleteAccount(@Parameter(description = &quot;ID of the user to delete the account&quot;) @PathVariable int userId,
+&nbsp;                                           @RequestBody DeleteAccountRequest request) {
+<b class="fc">&nbsp;        Optional&lt;User&gt; userOpt = userRepository.findById(Long.valueOf(userId));</b>
+<b class="pc">&nbsp;        if (userOpt.isEmpty()) return ResponseEntity.notFound().build();</b>
+&nbsp;
+<b class="fc">&nbsp;        User user = userOpt.get();</b>
+<b class="pc">&nbsp;        if (!request.getPassword().equals(user.getPassword())) {</b>
+<b class="fc">&nbsp;            return ResponseEntity.status(403).body(&quot;Incorrect password.&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        playerScoreRepository.deleteByUser(user);</b>
+<b class="nc">&nbsp;        complaintRepository.deleteByComplainedUserId(userId);</b>
+<b class="nc">&nbsp;        complaintRepository.deleteByComplainantUserId(userId);</b>
+<b class="nc">&nbsp;        problemReportRepository.deleteByUserId(userId);</b>
+<b class="nc">&nbsp;        profileRepository.deleteById(userId);</b>
+&nbsp;        // Delete any server memberships the user has
+<b class="nc">&nbsp;        List&lt;ServerMembership&gt; memberships = serverRepository.findMembershipsByUserId(userId);</b>
+<b class="nc">&nbsp;        for (ServerMembership membership : memberships) {</b>
+<b class="nc">&nbsp;            serverMembershipRepository.delete(membership);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        triviaGameplayRepository.deleteByUserId(Long.valueOf(userId));</b>
+<b class="nc">&nbsp;        userRepository.deleteById(Long.valueOf(userId));</b>
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;Account deleted successfully.&quot;);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

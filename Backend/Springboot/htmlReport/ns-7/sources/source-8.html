@@ -1,0 +1,97 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TriviaGameplayRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.Trivia</a>
+</div>
+
+<h1>Coverage Summary for Class: TriviaGameplayRepository (backend.demo2.Trivia)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">TriviaGameplayRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.Trivia;
+&nbsp;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;public interface TriviaGameplayRepository extends JpaRepository&lt;TriviaGameplay, Long&gt; {
+&nbsp;    TriviaGameplay findByUserId(Long userId); // Ensure this matches your user ID type
+&nbsp;    TriviaGameplay findTopByOrderByScoreDesc();
+&nbsp;    TriviaGameplay findByUserIdAndSessionId(Long userId, Long sessionId);
+&nbsp;    @Query(&quot;SELECT t FROM TriviaGameplay t WHERE t.sessionId = :sessionId ORDER BY t.score DESC LIMIT 1&quot;)
+&nbsp;    TriviaGameplay findHighestScorerBySessionId(Long sessionId);
+&nbsp;    // Optional: Delete gameplay records for a specific user
+&nbsp;    void deleteByUserId(Long userId);
+&nbsp;    @Query(&quot;SELECT tg FROM TriviaGameplay tg WHERE tg.sessionId = :sessionId AND tg.server.id = :serverId&quot;)
+&nbsp;    List&lt;TriviaGameplay&gt; findAllBySessionAndServer(Long sessionId, Long serverId);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT SUM(tg.score) FROM TriviaGameplay tg WHERE tg.sessionId = :sessionId AND tg.server.id = :serverId&quot;)
+&nbsp;    Integer findTotalScoreForSessionAndServer(Long sessionId, Long serverId);
+&nbsp;    @Query(&quot;SELECT tg FROM TriviaGameplay tg WHERE tg.sessionId = :sessionId AND tg.server.id = :serverId ORDER BY tg.score DESC&quot;)
+&nbsp;    TriviaGameplay findHighestScorerBySessionAndServer(Long sessionId, Long serverId);
+&nbsp;    @Query(&quot;SELECT tg FROM TriviaGameplay tg WHERE tg.sessionId = :sessionId AND tg.server.id = :serverId&quot;)
+&nbsp;    List&lt;TriviaGameplay&gt; findAllScoresBySessionAndServer(Long sessionId, Long serverId);
+&nbsp;
+&nbsp;    List&lt;TriviaGameplay&gt; findAllBySessionId(Long sessionId);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-11 13:58</div>
+</div>
+</body>
+</html>

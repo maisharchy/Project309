@@ -1,0 +1,207 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Complaint</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.Complaint</a>
+</div>
+
+<h1>Coverage Summary for Class: Complaint (backend.demo2.Complaint)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Complaint</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (10/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (14/16)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Complaint$HibernateInstantiator$Ic5MhP4f</td>
+  </tr>
+  <tr>
+    <td class="name">Complaint$HibernateInstantiator$ZRTwvo49</td>
+  </tr>
+  <tr>
+    <td class="name">Complaint$HibernateProxy$3pX47GMZ</td>
+  </tr>
+  <tr>
+    <td class="name">Complaint$HibernateProxy$oYEf7SFt</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (10/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (14/16)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.Complaint;
+&nbsp;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import org.springframework.lang.NonNull;
+&nbsp;import backend.demo2.User.User;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;complaints&quot;)
+&nbsp;public class Complaint {
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private Long complaintId;
+&nbsp;
+&nbsp;    // Foreign key to the User&#39;s table (user who is being complained against)
+&nbsp;    @ManyToOne // Define relationship
+&nbsp;    @JoinColumn(name = &quot;complained_user_id&quot;, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+&nbsp;    private User complainedUser;
+&nbsp;
+&nbsp;    // Foreign key to the User&#39;s table (user who made the complaint)
+&nbsp;    @ManyToOne // Define relationship
+&nbsp;    @JoinColumn(name = &quot;complainant_user_id&quot;, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+&nbsp;    private User complainantUser;
+&nbsp;
+&nbsp;    @NonNull
+&nbsp;    private String reason;
+&nbsp;
+&nbsp;    @NonNull
+&nbsp;    private LocalDate dateMade;
+&nbsp;
+&nbsp;    // Default constructor
+<b class="fc">&nbsp;    public Complaint() {}</b>
+&nbsp;
+<b class="fc">&nbsp;    public Complaint(User complainedUser, User complainantUser, String reason, LocalDate dateMade) {</b>
+<b class="fc">&nbsp;        this.complainedUser = complainedUser;</b>
+<b class="fc">&nbsp;        this.complainantUser = complainantUser;</b>
+<b class="fc">&nbsp;        this.reason = reason;</b>
+<b class="fc">&nbsp;        this.dateMade = dateMade;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Getters and setters
+&nbsp;    public Long getComplaintId() {
+<b class="fc">&nbsp;        return complaintId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setComplaintId(Long complaintId) {
+<b class="nc">&nbsp;        this.complaintId = complaintId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getComplainedUser() {
+<b class="fc">&nbsp;        return complainedUser;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setComplainedUser(User complainedUser) {
+<b class="fc">&nbsp;        this.complainedUser = complainedUser;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getComplainantUser() {
+<b class="fc">&nbsp;        return complainantUser;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setComplainantUser(User complainantUser) {
+<b class="fc">&nbsp;        this.complainantUser = complainantUser;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getReason() {
+<b class="fc">&nbsp;        return reason;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setReason(String reason) {
+<b class="fc">&nbsp;        this.reason = reason;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public LocalDate getDateMade() {
+<b class="fc">&nbsp;        return dateMade;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDateMade(LocalDate dateMade) {
+<b class="nc">&nbsp;        this.dateMade = dateMade;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-11 13:58</div>
+</div>
+</body>
+</html>

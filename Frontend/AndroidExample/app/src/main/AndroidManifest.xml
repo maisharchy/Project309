@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application
+        android:usesCleartextTraffic="true"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AndroidExample"
+        tools:targetApi="31">
+
+        <activity
+            android:name=".SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LogOutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreateServerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JoinServerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AssignGamesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AssignRolesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ComplaintsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GamesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MembersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProfileSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LeaderboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DeleteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TriviaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddQuestionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TileFlipActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NumberGuessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BugReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ManageReportsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UnscrambleActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".MainActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="0dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:text="Home"
+            android:textColor="#ffffff">
+        </Button>
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:text="Back"
+            android:textColor="#ffffff">
+        </Button>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/previousQuestionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="18sp"
+        android:text="previous question"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/previousAnswerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="18sp"
+        android:text="previous answer"
+        android:layout_marginBottom="26dp"/>
+
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="18sp"
+        android:text="Question"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/answerEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:hint="Enter answer Here">
+    </EditText>
+
+    <Button
+        android:id="@+id/btnAnswer"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Send Answer"
+        android:layout_gravity="center"
+        android:textColor="#ffffff">
+    </Button>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

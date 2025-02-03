@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FlipTheTileWebSocketHandler</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.websocket</a>
+</div>
+
+<h1>Coverage Summary for Class: FlipTheTileWebSocketHandler (backend.demo2.websocket)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FlipTheTileWebSocketHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10.5%
+  </span>
+  <span class="absValue">
+    (2/19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.websocket;
+&nbsp;
+&nbsp;import backend.demo2.service.FlipTheTile;
+&nbsp;import backend.demo2.User.User; // Ensure this is the correct import for your User class
+&nbsp;import org.springframework.web.socket.CloseStatus;
+&nbsp;import org.springframework.web.socket.TextMessage;
+&nbsp;import org.springframework.web.socket.WebSocketSession;
+&nbsp;import org.springframework.web.socket.handler.TextWebSocketHandler;
+&nbsp;
+&nbsp;public class FlipTheTileWebSocketHandler extends TextWebSocketHandler {
+&nbsp;
+&nbsp;    private FlipTheTile game;
+&nbsp;
+<b class="fc">&nbsp;    public FlipTheTileWebSocketHandler() {</b>
+<b class="fc">&nbsp;        this.game = new FlipTheTile();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+&nbsp;        // Create a new User object for the session
+<b class="nc">&nbsp;        User user = new User();</b>
+<b class="nc">&nbsp;        user.setUsername(&quot;User-&quot; + session.getId().toString());  // Convert session ID to string</b>
+<b class="nc">&nbsp;        game.addUser(session, user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+<b class="nc">&nbsp;        String payload = message.getPayload();</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Message received: &quot; + payload);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (payload.startsWith(&quot;flip&quot;)) {</b>
+<b class="nc">&nbsp;            int tileId = Integer.parseInt(payload.split(&quot;:&quot;)[1].trim());</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Flipping tile: &quot; + tileId);</b>
+<b class="nc">&nbsp;            game.flipTile(tileId, session); // Process the tile flip</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (payload.equals(&quot;start&quot;)) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Game starting...&quot;);</b>
+<b class="nc">&nbsp;            game.startGame(); // Start the game</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (payload.equals(&quot;restart&quot;)) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Restarting game...&quot;);</b>
+<b class="nc">&nbsp;            game.restartGame(); // Restart the game</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+&nbsp;        // Logging when the connection is closed
+<b class="nc">&nbsp;        System.out.println(&quot;WebSocket connection closed: &quot; + session.getId() + &quot;, Status: &quot; + status);</b>
+&nbsp;
+&nbsp;        // Ensure that the user is removed when the session ends
+<b class="nc">&nbsp;        game.removeUser(session); // Properly remove the user from the game</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

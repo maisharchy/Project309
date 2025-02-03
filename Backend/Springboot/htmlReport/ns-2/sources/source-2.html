@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ComplaintController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.Complaint</a>
+</div>
+
+<h1>Coverage Summary for Class: ComplaintController (backend.demo2.Complaint)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ComplaintController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78.3%
+  </span>
+  <span class="absValue">
+    (18/23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.Complaint;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/complaints&quot;)
+<b class="fc">&nbsp;public class ComplaintController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ComplaintService complaintService;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get all complaints&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;List of all complaints retrieved successfully&quot;)
+&nbsp;    @GetMapping
+&nbsp;    public List&lt;Complaint&gt; getAllComplaints() {
+<b class="nc">&nbsp;        return complaintService.getAllComplaints();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Create a new complaint&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Complaint created successfully&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid input data&quot;)
+&nbsp;    })
+&nbsp;    @PostMapping
+&nbsp;    public ResponseEntity&lt;Map&lt;String, Long&gt;&gt; createComplaint(@RequestBody ComplaintDTO complaintDTO) {
+&nbsp;        // Create the complaint
+<b class="fc">&nbsp;        Complaint createdComplaint = complaintService.createComplaint(</b>
+<b class="fc">&nbsp;                complaintDTO.getComplainedUserId(),</b>
+<b class="fc">&nbsp;                complaintDTO.getComplainantUserId(),</b>
+<b class="fc">&nbsp;                complaintDTO.getReason());</b>
+&nbsp;
+&nbsp;        // Prepare a map with the complaintId to return as a response
+<b class="fc">&nbsp;        Map&lt;String, Long&gt; response = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        response.put(&quot;complaintId&quot;, createdComplaint.getComplaintId());</b>
+&nbsp;
+&nbsp;        // Return only the complaintId in the response
+<b class="fc">&nbsp;        return ResponseEntity.ok(response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get a specific complaint by ID&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Complaint found&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Complaint not found&quot;)
+&nbsp;    })
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Complaint&gt; getComplaintById(
+&nbsp;            @Parameter(description = &quot;ID of the complaint to be retrieved&quot;) @PathVariable Long id) {
+<b class="fc">&nbsp;        Optional&lt;Complaint&gt; complaint = complaintService.getComplaintById(id);</b>
+<b class="fc">&nbsp;        return complaint.map(ResponseEntity::ok)</b>
+<b class="fc">&nbsp;                .orElseGet(() -&gt; ResponseEntity.notFound().build());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Delete a complaint by ID&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Complaint deleted successfully&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Complaint not found&quot;)
+&nbsp;    })
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteComplaint(@PathVariable Long id) {
+<b class="fc">&nbsp;        complaintService.deleteComplaint(id);</b>
+<b class="fc">&nbsp;        return ResponseEntity.noContent().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update an existing complaint&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Complaint updated successfully&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid input data&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Complaint not found&quot;)
+&nbsp;    })
+&nbsp;    @PutMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Complaint&gt; updateComplaint(
+&nbsp;            @Parameter(description = &quot;ID of the complaint to be updated&quot;) @PathVariable Long id,
+&nbsp;            @RequestBody ComplaintDTO complaintDTO) {
+<b class="fc">&nbsp;        Complaint updatedComplaint = complaintService.updateComplaint(</b>
+&nbsp;                id,
+<b class="fc">&nbsp;                complaintDTO.getComplainedUserId(),</b>
+<b class="fc">&nbsp;                complaintDTO.getComplainantUserId(),</b>
+<b class="fc">&nbsp;                complaintDTO.getReason());</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(updatedComplaint);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get complaints by complainant user ID&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Complaints found for the complainant user&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;No complaints found for the given complainant user ID&quot;)
+&nbsp;    })
+&nbsp;    @GetMapping(&quot;/complainant/{complainantUserId}&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Complaint&gt;&gt; getComplaintsByComplainantUserId(
+&nbsp;            @Parameter(description = &quot;Complainant user ID&quot;) @PathVariable int complainantUserId) {
+<b class="nc">&nbsp;        List&lt;Complaint&gt; complaints = complaintService.getComplaintsByComplainantUserId(complainantUserId);</b>
+<b class="nc">&nbsp;        if (complaints.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.notFound().build(); // Return 404 if no complaints found</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.ok(complaints); // Return the list of complaints</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-11 13:58</div>
+</div>
+</body>
+</html>

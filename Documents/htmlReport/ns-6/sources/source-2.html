@@ -1,0 +1,311 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ServerController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.Server</a>
+</div>
+
+<h1>Coverage Summary for Class: ServerController (backend.demo2.Server)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ServerController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10%
+  </span>
+  <span class="absValue">
+    (1/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.8%
+  </span>
+  <span class="absValue">
+    (2/71)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.Server;
+&nbsp;
+&nbsp;import backend.demo2.ProblemReport.ProblemReport;
+&nbsp;import backend.demo2.User.User;
+&nbsp;import backend.demo2.User.UserRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import backend.demo2.Complaint.Complaint;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/servers&quot;)
+&nbsp;@Tag(name = &quot;Server Controller&quot;, description = &quot;Operations related to servers, including creation, joining, leaving, and complaints.&quot;)
+&nbsp;public class ServerController {
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ServerRepository serverRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ServerMembershipRepository serverMembershipRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRepository userRepository;
+&nbsp;
+&nbsp;    private final ServerService serverService;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public ServerController(ServerService serverService) {</b>
+<b class="fc">&nbsp;        this.serverService = serverService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/create&quot;)
+&nbsp;    @Operation(summary = &quot;Create a new server&quot;, description = &quot;Creates a new server and adds the user as an admin if the user is valid.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Server created successfully.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request if user is not found.&quot;)
+&nbsp;    public ResponseEntity&lt;Server&gt; createServer(@RequestBody ServerCreationRequest request) {
+<b class="nc">&nbsp;        Server server = new Server(request.getName());</b>
+<b class="nc">&nbsp;        Server savedServer = serverRepository.save(server);</b>
+&nbsp;
+<b class="nc">&nbsp;        Optional&lt;User&gt; userOptional = userRepository.findById(request.getUserId().longValue());</b>
+<b class="nc">&nbsp;        if (userOptional.isPresent()) {</b>
+<b class="nc">&nbsp;            User user = userOptional.get();</b>
+<b class="nc">&nbsp;            ServerMembership membership = new ServerMembership(savedServer, user, &quot;admin&quot;, 0);</b>
+<b class="nc">&nbsp;            serverMembershipRepository.save(membership);</b>
+<b class="nc">&nbsp;            savedServer.getMemberships().add(membership);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(null);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.ok(savedServer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/join&quot;)
+&nbsp;    @Operation(summary = &quot;Join an existing server&quot;, description = &quot;Allows a user to join an existing server if they are not already a member.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;User successfully joined the server.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request if server or user is not found or if the user is already a member.&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; joinServerByBody(@RequestBody ServerJoinRequest request) {
+<b class="nc">&nbsp;        Server server = serverRepository.findByServerId(request.getServerId());</b>
+<b class="nc">&nbsp;        Optional&lt;User&gt; userOptional = userRepository.findById(request.getUserId().longValue());</b>
+&nbsp;
+<b class="nc">&nbsp;        if (server == null || userOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;Server or User not found&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        User user = userOptional.get();</b>
+<b class="nc">&nbsp;        boolean isAlreadyMember = serverMembershipRepository.findByUser(user).stream()</b>
+<b class="nc">&nbsp;                .anyMatch(membership -&gt; membership.getServer().equals(server));</b>
+&nbsp;
+<b class="nc">&nbsp;        if (isAlreadyMember) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;User already a member of the server&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        ServerMembership membership = new ServerMembership(server, user, &quot;player&quot;, 0);</b>
+<b class="nc">&nbsp;        serverMembershipRepository.save(membership);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;User successfully joined the server as a player&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/my-servers/{userId}&quot;)
+&nbsp;    @Operation(summary = &quot;Get all servers the user is a member of&quot;, description = &quot;Fetches all servers where the specified user is a member.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;List of servers returned.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request if user not found.&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;ServerDetailsDTO&gt;&gt; getUserServers(@PathVariable Long userId) {
+<b class="nc">&nbsp;        Optional&lt;User&gt; userOptional = userRepository.findById(userId);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (userOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(List.of(new ServerDetailsDTO(null, &quot;User not found&quot;)));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        User user = userOptional.get();</b>
+<b class="nc">&nbsp;        List&lt;ServerDetailsDTO&gt; serverDetails = serverMembershipRepository.findByUser(user).stream()</b>
+<b class="nc">&nbsp;                .map(membership -&gt; new ServerDetailsDTO(</b>
+<b class="nc">&nbsp;                        membership.getServer().getServerId(),</b>
+<b class="nc">&nbsp;                        membership.getServer().getName()</b>
+&nbsp;                ))
+<b class="nc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(serverDetails);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/enter/{serverId}/{userId}&quot;)
+&nbsp;    @Operation(summary = &quot;Enter a server&quot;, description = &quot;Allows a user to enter a server they are a member of.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;User successfully entered the server.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request if user is not a member of the server or if server/user is not found.&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; enterServer(@PathVariable Integer serverId, @PathVariable Long userId) {
+<b class="nc">&nbsp;        Server server = serverRepository.findByServerId(serverId);</b>
+<b class="nc">&nbsp;        Optional&lt;User&gt; userOptional = userRepository.findById(userId);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (server == null || userOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;Server or User not found&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        User user = userOptional.get();</b>
+<b class="nc">&nbsp;        Optional&lt;ServerMembership&gt; membershipOptional = serverMembershipRepository.findByUser(user).stream()</b>
+<b class="nc">&nbsp;                .filter(membership -&gt; membership.getServer().equals(server))</b>
+<b class="nc">&nbsp;                .findFirst();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (membershipOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;User is not a member of the server&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        String userType = membershipOptional.get().getRole();</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;User entered server: &quot; + server.getName() + &quot;, User Type: &quot; + userType);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{serverId}/memberships&quot;)
+&nbsp;    @Operation(summary = &quot;Show all server memberships&quot;, description = &quot;Fetches all memberships associated with a server.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;List of server memberships returned.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request if server is not found.&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;ServerMembership&gt;&gt; showServerMemberships(@PathVariable Integer serverId) {
+<b class="nc">&nbsp;        Server server = serverRepository.findByServerId(serverId);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (server == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(null);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        List&lt;ServerMembership&gt; memberships = serverMembershipRepository.findByServer(server);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(memberships);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/leave/{serverId}/{userId}&quot;)
+&nbsp;    @Operation(summary = &quot;Leave a server&quot;, description = &quot;Allows a user to leave a server they are currently a member of.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;User successfully left the server.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request if user is not a member or if server/user is not found.&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; leaveServer(@PathVariable Integer serverId, @PathVariable Long userId) {
+<b class="nc">&nbsp;        Server server = serverRepository.findByServerId(serverId);</b>
+<b class="nc">&nbsp;        Optional&lt;User&gt; userOptional = userRepository.findById(userId);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (server == null || userOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;Server or User not found&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        User user = userOptional.get();</b>
+<b class="nc">&nbsp;        List&lt;ServerMembership&gt; memberships = serverMembershipRepository.findByUser(user);</b>
+<b class="nc">&nbsp;        ServerMembership membership = memberships.stream()</b>
+<b class="nc">&nbsp;                .filter(m -&gt; m.getServer().equals(server))</b>
+<b class="nc">&nbsp;                .findFirst()</b>
+<b class="nc">&nbsp;                .orElse(null);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (membership == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;User is not a member of the server&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        serverMembershipRepository.delete(membership);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;User has left the server&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{serverId}/complaints&quot;)
+&nbsp;    @Operation(summary = &quot;Get all complaints for a server&quot;, description = &quot;Fetches all complaints for a specified server.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;List of complaints returned.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request if server not found.&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;Complaint&gt;&gt; getAllComplaintsForServer(@PathVariable Integer serverId) {
+<b class="nc">&nbsp;        List&lt;Complaint&gt; complaints = serverService.getAllComplaintsForServer(serverId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(complaints);</b>
+&nbsp;    }
+&nbsp;    @GetMapping(&quot;/{serverId}/problem-reports&quot;)
+&nbsp;    @Operation(summary = &quot;Get all problem reports for a server&quot;, description = &quot;Fetches all problem reports for users in a specified server.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;List of problem reports returned.&quot;)
+&nbsp;    @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Bad request if server not found.&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;ProblemReport&gt;&gt; getProblemReportsForServer(@PathVariable Integer serverId) {
+&nbsp;        try {
+<b class="nc">&nbsp;            List&lt;ProblemReport&gt; problemReports = serverService.getProblemReportsForServer(serverId);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(problemReports);</b>
+<b class="nc">&nbsp;        } catch (RuntimeException e) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(null);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-09 18:53</div>
+</div>
+</body>
+</html>

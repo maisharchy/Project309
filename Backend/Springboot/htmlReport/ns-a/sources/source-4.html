@@ -1,0 +1,179 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > RoleAssignmentController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">backend.demo2.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: RoleAssignmentController (backend.demo2.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RoleAssignmentController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.3%
+  </span>
+  <span class="absValue">
+    (1/19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package backend.demo2.controller;
+&nbsp;
+&nbsp;import backend.demo2.Server.Server;
+&nbsp;import backend.demo2.Server.ServerMembership;
+&nbsp;import backend.demo2.Server.ServerMembershipRepository;
+&nbsp;import backend.demo2.Server.ServerRepository;
+&nbsp;import backend.demo2.User.User;
+&nbsp;import backend.demo2.User.UserRepository;
+&nbsp;import backend.demo2.model.RoleAssignment;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api/servers/roles&quot;)
+<b class="fc">&nbsp;public class RoleAssignmentController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ServerRepository serverRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRepository userRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ServerMembershipRepository serverMembershipRepository;
+&nbsp;
+&nbsp;    @PutMapping(&quot;/assign&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; assignRole(@RequestBody RoleAssignment request) {
+&nbsp;        // Find server and user from the request
+<b class="nc">&nbsp;        Server server = serverRepository.findByServerId(request.getServerId());</b>
+<b class="nc">&nbsp;        Optional&lt;User&gt; userOptional = userRepository.findById(request.getUserId().longValue());</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        if (server == null || userOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;Server or User not found&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        User user = userOptional.get();</b>
+&nbsp;
+&nbsp;        // Check if the user is already a member of the server
+<b class="nc">&nbsp;        Optional&lt;ServerMembership&gt; membershipOptional = serverMembershipRepository.findByUser(user).stream()</b>
+<b class="nc">&nbsp;                .filter(membership -&gt; membership.getServer().equals(server))</b>
+<b class="nc">&nbsp;                .findFirst();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (membershipOptional.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;User is not a member of the server&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Update the role
+<b class="nc">&nbsp;        ServerMembership membership = membershipOptional.get();</b>
+<b class="nc">&nbsp;        if (request.getRole().equalsIgnoreCase(&quot;moderator&quot;) ||</b>
+<b class="nc">&nbsp;                request.getRole().equalsIgnoreCase(&quot;player&quot;) ||</b>
+<b class="nc">&nbsp;                request.getRole().equalsIgnoreCase(&quot;admin&quot;)) {</b>
+<b class="nc">&nbsp;            membership.setRole(request.getRole().toLowerCase());</b>
+<b class="nc">&nbsp;            serverMembershipRepository.save(membership);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Role updated successfully to &quot; + request.getRole());</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().body(&quot;Invalid role specified&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-11 13:58</div>
+</div>
+</body>
+</html>
